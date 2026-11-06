@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>立冬快乐｜蜡笔小新贺卡</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+
+/* 黑夜星空背景 */
+body{
+  background:
+    radial-gradient(900px 500px at 20% 15%, rgba(255, 220, 240, 0.18), transparent 60%),
+    radial-gradient(700px 400px at 80% 30%, rgba(170, 200, 255, 0.15), transparent 60%),
+    linear-gradient(180deg, #05070d 0%, #0a0f1f 40%, #121a33 100%);
+}
+
+/* 星星层 */
+.stars{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+}
+.stars::before,
+.stars::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, #ffffff, transparent 50%),
+    radial-gradient(1px 1px at 45% 18%, #ffffff, transparent 50%),
+    radial-gradient(1.5px 1.5px at 75% 32%, #ffffff, transparent 50%),
+    radial-gradient(1px 1px at 30% 55%, #d6e4ff, transparent 50%),
+    radial-gradient(1px 1px at 88% 60%, #ffffff, transparent 50%),
+    radial-gradient(1.5px 1.5px at 60% 75%, #ffffff, transparent 50%),
+    radial-gradient(1px 1px at 20% 80%, #ffffff, transparent 50%),
+    radial-gradient(1px 1px at 50% 40%, #ffe4f5, transparent 50%),
+    radial-gradient(1px 1px at 92% 15%, #ffffff, transparent 50%),
+    radial-gradient(1.2px 1.2px at 10% 45%, #ffffff, transparent 50%),
+    radial-gradient(1px 1px at 68% 22%, #d6e4ff, transparent 50%),
+    radial-gradient(1px 1px at 38% 70%, #ffffff, transparent 50%);
+  background-size:100% 100%;
+  opacity:0.9;
+  animation:twinkle 7s ease-in-out infinite alternate;
+}
+.stars::after{
+  background-position:15% 25%;
+  animation-duration:9s;
+  opacity:0.5;
+}
+@keyframes twinkle{
+  from{opacity:0.35;}
+  to{opacity:1;}
+}
+
+/* 流星容器 */
+.meteor-wrap{
+  position:fixed;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+}
+.meteor{
+  position:absolute;
+  top:-10%;
+  left:50%;
+  width:140px;
+  height:2px;
+  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, #ffffff 45%, #9fd1ff 100%);
+  border-radius:50%;
+  opacity:0;
+  filter:drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 14px #9fd1ff);
+  animation:meteor linear infinite;
+}
+@keyframes meteor{
+  0%{
+    transform:translateX(0) translateY(0) rotate(-25deg);
+    opacity:0;
+  }
+  6%{
+    opacity:1;
+  }
+  45%{
+    transform:translateX(-140px) translateY(420px) rotate(-25deg);
+    opacity:0;
+  }
+  100%{
+    transform:translateX(-140px) translateY(420px) rotate(-25deg);
+    opacity:0;
+  }
+}
+
+/* 贺卡容器 */
+.card{
+  position:relative;
+  z-index:3;
+  width:92%;
+  max-width:420px;
+  margin:0 auto;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px 20px;
+}
+
+/* 小新图片 */
+.xiaoxin-img{
+  width:150px;
+  height:auto;
+  margin-bottom:24px;
+  filter:drop-shadow(0 4px 12px rgba(150, 200, 255, 0.35));
+}
+
+/* 文字 */
+.text-box{
+  color:#ffffff;
+  line-height:2.2;
+  font-size:17px;
+  letter-spacing:1.5px;
+  text-shadow:
+    0 1px 6px rgba(0,0,0,0.6),
+    0 0 14px rgba(180, 220, 255, 0.35);
+  min-height:160px;
+}
+
+.tip{
+  position:fixed;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:4;
+  font-size:13px;
+  color:#cfe4ff;
+  opacity:0.75;
+}
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="meteor-wrap" id="meteorBox"></div>
+
+<div class="card">
+  <img class="xiaoxin-img" src="https://www.kindpng.com/picc/m/401-4010208_transparent-shin-chan-png.png" alt="蜡笔小新">
+  <div class="text-box" id="typeText"></div>
+</div>
+
+<div class="tip">点击页面任意位置播放音乐</div>
+
+<audio id="bgm" loop preload="auto">
+  <source src="http://www.cdmdy.com/tears.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// 生成更多流星：12颗
+function createMeteors(){
+  const box = document.getElementById('meteorBox');
+  const count = 12;
+  for(let i = 0; i < count; i++){
+    const m = document.createElement('div');
+    m.className = 'meteor';
+    m.style.left = Math.random() * 100 + '%';
+    m.style.top = '-10%';
+    m.style.width = (Math.random() * 80 + 90) + 'px';
+    m.style.animationDuration = (Math.random() * 3 + 4) + 's';
+    m.style.animationDelay = (Math.random() * 8) + 's';
+    m.style.transform = `scale(${Math.random() * 0.5 + 0.6})`;
+    box.appendChild(m);
+  }
+}
+createMeteors();
+
+// 逐字显示文字
+const content = `天气越来越冷，
+接下来的日子记得添衣保暖，
+按时吃饭，早点睡觉，要好好照顾自己，
+多爱自己一点噢~立冬快乐哟~`;
+
+const dom = document.getElementById('typeText');
+let index = 0;
+
+function typeWrite(){
+  if(index < content.length){
+    dom.innerHTML += content.charAt(index);
+    index++;
+    setTimeout(typeWrite, 90);
+  }
+}
+typeWrite();
+
+// 微信兼容：点击播放BGM
+const audio = document.getElementById('bgm');
+let played = false;
+
+document.body.addEventListener('click', () => {
+  if(!played){
+    audio.play().then(() => {
+      played = true;
+      document.querySelector('.tip').style.display = 'none';
+    }).catch(e => {
+      console.log('播放失败', e);
+    });
+  }
+});
+</script>
+
+</body>
+</html>
